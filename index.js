@@ -1,8 +1,12 @@
-function LoadProgressBar(
-  detailsColor = null,
-  progressBarBg = null,
-  timeToLoad = null
-) {
+function LoadProgressBar(options) {
+  const haveValidTempoTransicao =
+    options && options.tempoTransicao && Number(options.tempoTransicao)
+      ? true
+      : false;
+
+  const haveValidTempoDelay =
+    options && options.tempoDelay && Number(options.tempoDelay) ? true : false;
+
   const progressBarContainer = document.getElementById("progress-bar");
   progressBarContainer.style.display = "flex";
   progressBarContainer.style.maxWidth = "450px";
@@ -13,7 +17,7 @@ function LoadProgressBar(
 
   const progressCounter = document.createElement("span");
   progressCounter.textContent = "85%";
-  progressCounter.style.color = detailsColor || "#ffffff";
+  progressCounter.style.color = (options && options.detalhes) || "#000000";
   progressCounter.style.fontFamily = "inherit";
   progressCounter.style.marginLeft = "10px";
   progressCounter.style.fontWeight = "600";
@@ -22,7 +26,9 @@ function LoadProgressBar(
   const progressBarWrapper = document.createElement("div");
   progressBarWrapper.style.flex = "1";
 
-  progressBarWrapper.style.border = `2px solid ${detailsColor || "#ffffff"}`;
+  progressBarWrapper.style.border = `2px solid ${
+    (options && options.detalhes) || "#000000"
+  }`;
   progressBarWrapper.style.padding = "3px";
   progressBarWrapper.style.borderRadius = "20px";
   progressBarWrapper.style.height = "20px";
@@ -30,8 +36,11 @@ function LoadProgressBar(
   const progressBar = document.createElement("div");
 
   progressBar.style.width = "0%";
-  progressBar.style.transition = "all 1s";
-  progressBar.style.backgroundColor = progressBarBg || "#3bdf8a";
+
+  progressBar.style.transition = haveValidTempoTransicao
+    ? "all " + options.tempoTransicao * 1000 + "ms"
+    : "all 1000ms";
+  progressBar.style.backgroundColor = (options && options.barra) || "#3bdf8a";
   progressBar.style.height = "100%";
   progressBar.style.borderRadius = "10px";
 
@@ -40,7 +49,10 @@ function LoadProgressBar(
   progressBarContainer.appendChild(progressBarWrapper);
   progressBarContainer.appendChild(progressCounter);
 
-  setTimeout(() => {
-    progressBar.style.width = "85%";
-  }, timeToLoad || 1000);
+  setTimeout(
+    () => {
+      progressBar.style.width = "85%";
+    },
+    haveValidTempoDelay ? options.tempoDelay * 1000 : 1000
+  );
 }
